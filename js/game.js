@@ -382,7 +382,7 @@ function World() {
 	{
 		var scale = minScale + (maxScale - minScale) * Math.random();
 		var options = [question.option1, question.option2];
-		var questionBox = new QuestionBox(question.text, position/2, scale);
+		var questionBox = new QuestionBox(question.text, position/2 - 500, scale);
 		questionBoxes.push(questionBox);
 		scene.add(questionBox.mesh);
 
@@ -766,7 +766,7 @@ function Question(text, opt1, opt1_corr, opt2, opt2_corr) {
 function QuestionBox(text, z, s) {
     var self = this;
     this.mesh = new THREE.Object3D();
-    var geometry = new THREE.BoxGeometry(5000, 1000, 0);
+    var geometry = new THREE.BoxGeometry(10000, 1000, 0);
     var material = new THREE.MeshBasicMaterial({ color: Colors.yellow });
     var box = new THREE.Mesh(geometry, material);
     this.mesh.add(box);
@@ -778,8 +778,9 @@ function QuestionBox(text, z, s) {
     loader.load('https://cdn.rawgit.com/mrdoob/three.js/master/examples/fonts/helvetiker_regular.typeface.json', function(font) {
         var textGeometry = new THREE.TextGeometry(text, {
             font: font,
-            size: 100,
+            size: 200,
             height: 20,
+			width: 1000,
             wrapMode: THREE.TextGeometry.prototype.WrapAroundGeometry
         });
         var textMaterial = new THREE.MeshBasicMaterial({ color: Colors.black });
@@ -796,7 +797,6 @@ function QuestionBox(text, z, s) {
 
         // Adjust position relative to the box
         textMesh.position.z = 100; // Adjust as needed
-
         this.mesh.add(textMesh); // Add textMesh to the scene
     }.bind(this));
 }
