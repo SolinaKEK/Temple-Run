@@ -20,6 +20,7 @@ var Colors = {
 	sand: 0xc2b280,
 	brownDark: 0x23190f,
 	green: 0x669900,
+	black: 0x000000
 };
 
 var deg2Rad = Math.PI / 180;
@@ -49,7 +50,8 @@ function World() {
 
 	// Scoped variables in this world.
 	var element, scene, camera, character, renderer, light,
-		objects, paused, keysAllowed, score, difficulty,
+		objects, paused, keysAllowed, score, question_count, 
+		questions, correct_count, difficulty,
 		treePresenceProb, maxTreeSize, fogDistance, gameOver;
 
 	// Initialize the world.
@@ -98,18 +100,15 @@ function World() {
 		scene.add(character.element);
 
 		var ground = createBox(3000, 20, 120000, Colors.sand, 0, -400, -60000);
-		var questionBox = createBox(3000, 500, 0, Colors.yellow, 0, 2000, -6000);
 		scene.add(ground);
-		scene.add(questionBox);
 
 		objects = [];
-		treePresenceProb = 0.2;
+		questions = [];
+		treePresenceProb = 0.3;
 		maxTreeSize = 0.5;
 
-		createRowOfBoxes(5*-3000, 1, 0.5, maxTreeSize);
-
 		for (var i = 10; i < 40; i++) {
-			createRowOfTrees(i * -3000, treePresenceProb, 0.5, maxTreeSize);
+			question_count = createRowofObstacles(i * -3000, treePresenceProb, 0.5, maxTreeSize, question_count);
 		}
 
 		// The game is paused to begin with and the game is not over.
@@ -175,6 +174,8 @@ function World() {
 
 		// Initialize the scores and difficulty.
 		score = 0;
+		question_count = 0;
+		correct_count = 0;
 		difficulty = 0;
 		document.getElementById("score").innerHTML = score;
 
@@ -232,18 +233,19 @@ function World() {
 				} else if (difficulty >= 8 * levelLength && difficulty < 9 * levelLength) {
 					fogDistance -= (5000 / levelLength);
 				}
-				createRowOfTrees(-120000, treePresenceProb, 0.5, maxTreeSize);
+				question_count = createRowofObstacles(-120000, treePresenceProb, 0.5, maxTreeSize, question_count);
 				scene.fog.far = fogDistance;
 			}
 
-			// Move the trees closer to the character.
+			// Move the obstcles closer to the character.
 			objects.forEach(function(object) {
 				object.mesh.position.z += 100;
+				if (object.hiddenZ) object.hiddenZ += 100;
 			});
 
-			// Remove trees that are outside of the world.
+			// Remove obstacles that are outside of the world.
 			objects = objects.filter(function(object) {
-				return object.mesh.position.z < 0;
+				return object.mesh.position.z < 0 || (object.hiddenZ && object.hiddenZ < 0);
 			});
 
 			// Make the character move according to the controls.
@@ -341,6 +343,7 @@ function World() {
  	 * @param {number} MAXSCALE The maximum size of the trees.
  	 *
 	 */
+
 	function createRowOfTrees(position, probability, minScale, maxScale) {
 		for (var lane = -1; lane < 2; lane++) {
 			var randomNumber = Math.random();
@@ -353,18 +356,41 @@ function World() {
 		}
 	}
 
-	function createRowOfBoxes(position, probability, minScale, maxScale) {
+	function createRowofAnswers(position, probability, minScale, maxScale, question_count) 
+	{
+		var scale = minScale + (maxScale - minScale) * Math.random();
+
+		questionBox = new QuestionBox("made you look", question_count);
+		questions.push(questionBox);
+		scene.add(questionBox.mesh);
+	
+		var treePosition = Math.floor(Math.random() * 3) - 1;
+		var obstacle;
 		for (var lane = -1; lane < 2; lane++) {
-			var randomNumber = Math.random();
-			if (randomNumber < probability) {
-				var scale = minScale + (maxScale - minScale) * Math.random();
-				var box = new BoxWithText(lane * 800, -400, position, scale, "hello bitches");
-				objects.push(box);
-				scene.add(box.mesh);
+			if (lane == treePosition) {
+				obstacle = new Tree(lane * 800, -400, position, scale);
+			} else {
+				obstacle = new AnswerBox(lane * 800, -400, position, scale, "hello bitches", question_count+1);
 			}
+			objects.push(obstacle);
+			scene.add(obstacle.mesh);
 		}
 	}
 
+	function createRowofObstacles(position, probability, minScale, maxScale, question_count) 
+	{
+		var randomNumber = Math.random();
+		if (randomNumber < probability) {
+			var randomNumber = Math.random();
+			if (randomNumber < 0.2) {
+				createRowOfTrees(position, probability, minScale, maxScale);
+			} else { 
+				createRowofAnswers(position, probability, minScale, maxScale, question_count);
+				return question_count + 1;
+			}
+		}
+		return question_count;
+	}
 	/**
 	 * Returns true if and only if the character is currently colliding with
 	 * an object on the map.
@@ -679,9 +705,33 @@ function Tree(x, y, z, s) {
     		&& treeMinZ <= maxZ && treeMaxZ >= minZ;
     }
 }
-
-function BoxWithText(x, y, z, s, text) {
+function QuestionBox(text, question_count) {
 	var self = this;
+	this.mesh = new THREE.Object3D();
+	var geometry = new THREE.BoxGeometry(3000, 500, 0);
+    var material = new THREE.MeshBasicMaterial({ color: Colors.yellow });
+    var box = new THREE.Mesh(geometry, material);
+    this.mesh.add(box);
+    this.mesh.position.set(0, 2000, -6000);
+	var textmesh;
+	var loader = new THREE.FontLoader();
+    loader.load('https://cdn.rawgit.com/mrdoob/three.js/master/examples/fonts/helvetiker_regular.typeface.json', function(font) {
+        var textGeometry = new THREE.TextGeometry(text, {
+            font: font,
+            size: 80,
+            height: 20,
+			wrapMode: THREE.TextGeometry.prototype.WrapAroundGeometry
+		});
+        var textMaterial = new THREE.MeshBasicMaterial({ color: Colors.black });
+        textMesh = new THREE.Mesh(textGeometry, textMaterial);
+		textMesh.position.set(-1200, 80, 100); // Adjust position as needed
+		this.mesh.add(textMesh); // Add textMesh to the scene
+	}.bind(this));
+}
+
+function AnswerBox(x, y, z, s, text, question_count) {
+	var self = this;
+	this.id = question_count;
 	this.mesh = new THREE.Object3D();
 	var geometry = new THREE.BoxGeometry(1000, 4000, 500);
     var material = new THREE.MeshBasicMaterial({ color: Colors.blue });
@@ -696,8 +746,9 @@ function BoxWithText(x, y, z, s, text) {
     loader.load('https://cdn.rawgit.com/mrdoob/three.js/master/examples/fonts/helvetiker_regular.typeface.json', function(font) {
         var textGeometry = new THREE.TextGeometry(text, {
             font: font,
-            size: 100,
-            height: 50
+            size: 150,
+            height: 50,
+			wrapMode: THREE.TextGeometry.prototype.WrapAroundGeometry
         });
         var textMaterial = new THREE.MeshBasicMaterial({ color: Colors.white });
         textMesh = new THREE.Mesh(textGeometry, textMaterial);
@@ -712,7 +763,7 @@ function BoxWithText(x, y, z, s, text) {
 		var boxMaxY = self.mesh.position.y + this.scale * (500 / 2);
 		var boxMinZ = self.mesh.position.z - this.scale * (500 / 2);
 		var boxMaxZ = self.mesh.position.z + this.scale * (500 / 2);
-    	return boxMinX <= maxX && boxMaxX >= minX
+    	return (this.answer==false) && boxMinX <= maxX && boxMaxX >= minX
     		&& boxMinY <= maxY && boxMaxY >= minY
     		&& boxMinZ <= maxZ && boxMaxZ >= minZ;
     }
