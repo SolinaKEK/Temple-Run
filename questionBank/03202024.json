@@ -1,0 +1,117 @@
+{
+    "questions": [
+    {
+        "question": "What would you like most in St. Edward's Hall?",
+        "answer_choices": {
+            "A": {"option": "Roller skating rink", "correct": true},
+            "B": {"option": "Giant trampoline", "correct": true}
+        },
+        "difficulty": "fun"
+        },
+      {
+        "question": "Which dorm has the tallest ceilings?",
+        "answer_choices": {
+          "A": {"option": "St. Edward's Hall", "correct": true},
+          "B": {"option": "Duncan Hall", "correct": false}
+        },
+        "difficulty": "easy"
+      },
+      {
+        "question": "Who is the current Rector of St. Edward's Hall?",
+        "answer_choices": {
+          "A": {"option": "Rev. Ralph Haag, C.S.C.", "correct": true},
+          "B": {"option": "Fr. Kevin Sandberg, C.S.C.", "correct": false}
+        },
+        "difficulty": "easy"
+      },
+      {
+        "question": "Which hall has the most spacious rooms?",
+        "answer_choices": {
+          "A": {"option": "St. Edward's Hall", "correct": true},
+          "B": {"option": "Dillon Hall", "correct": false}
+        },
+        "difficulty": "medium"
+      },
+      {
+        "question": "Which floor has the tallest ceilings in St. Edward's Hall?",
+        "answer_choices": {
+          "A": {"option": "First floor", "correct": false},
+          "B": {"option": "Second floor", "correct": true}
+        },
+        "difficulty": "medium"
+      },
+      {
+        "question": "Who is the Welcome Week Captain of St. Edward's Hall?",
+        "answer_choices": {
+          "A": {"option": "Brendan Avey", "correct": true},
+          "B": {"option": "Ben Somerville", "correct": false}
+        },
+        "difficulty": "hard"
+      },
+      {
+        "question": "What is the full name of the hall president of St. Edward's Hall?",
+        "answer_choices": {
+          "A": {"option": "Dane Storch", "correct": false},
+          "B": {"option": "Brendan Avey", "correct": true}
+        },
+        "difficulty": "hard"
+      },
+      {
+        "question": "Who is the Vice President of St. Edward's Hall?",
+        "answer_choices": {
+          "A": {"option": "Louis Rauch", "correct": true},
+          "B": {"option": "Andrew Kolodychak", "correct": false}
+        },
+        "difficulty": "hard"
+      },
+      {
+        "question": "Which hall was recently renovated?",
+        "answer_choices": {
+          "A": {"option": "Stanford Hall", "correct": false},
+          "B": {"option": "St. Edward's Hall", "correct": true}
+        },
+        "difficulty": "hard"
+      },
+      {
+        "question": "Who is the priest in residence at St. Edward's Hall?",
+        "answer_choices": {
+          "A": {"option": "Fr. Ralph Haag, C.S.C.", "correct": false},
+          "B": {"option": "Fr. Kevin Sandberg, C.S.C.", "correct": true}
+        },
+        "difficulty": "hard"
+      },
+      {
+        "question": "What does St. Edward's Hall consider itself as?",
+        "answer_choices": {
+          "A": {"option": "A community of brothers", "correct": true},
+          "B": {"option": "A behemoth", "correct": false}
+        },
+        "difficulty": "fun"
+      },
+      {
+        "question": "In which year was St. Edward's Hall extensively damaged by fire?",
+        "answer_choices": {
+          "A": {"option": "1980", "correct": true},
+          "B": {"option": "1976", "correct": false}
+        },
+        "difficulty": "medium"
+      },
+      {
+        "question": "Who received First Holy Communion in the St. Edward's chapel in November of 1924?",
+        "answer_choices": {
+          "A": {"option": "Fr. Ralph Haag, C.S.C.", "correct": false},
+          "B": {"option": "Rev. James McDonald, C.S.C.", "correct": true}
+        },
+        "difficulty": "hard"
+      },
+      {
+        "question": "What is your most cherished possession in St. Edward's Hall?",
+        "answer_choices": {
+          "A": {"option": "Stuffed mascot", "correct": true},
+          "B": {"option": "Hall flag", "correct": true}
+        },
+        "difficulty": "hard"
+      }
+    ]
+  }
+  
