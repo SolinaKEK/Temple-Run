@@ -1,9 +1,6 @@
 
 /**
  *
- * BOXY RUN
- * ----
- * Simple Temple-Run-esque game, created with love by Wan Fung Chui.
  *
  */
 
@@ -393,7 +390,7 @@ function Character() {
 	this.skinColor = Colors.brown;
 	this.hairColor = Colors.black;
 	this.shirtColor = Colors.yellow;
-	this.shortsColor = Colors.olive;
+	this.shortsColor = Colors.blue;
 	this.jumpDuration = 0.6;
 	this.jumpHeight = 2000;
 
