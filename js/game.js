@@ -103,6 +103,8 @@ function World() {
 		objects = [];
 		treePresenceProb = 0.2;
 		maxTreeSize = 0.5;
+		createRowOfBoxes(5*-3000, 1, 0.5, maxTreeSize);
+
 		for (var i = 10; i < 40; i++) {
 			createRowOfTrees(i * -3000, treePresenceProb, 0.5, maxTreeSize);
 		}
@@ -344,6 +346,18 @@ function World() {
 				var tree = new Tree(lane * 800, -400, position, scale);
 				objects.push(tree);
 				scene.add(tree.mesh);
+			}
+		}
+	}
+
+	function createRowOfBoxes(position, probability, minScale, maxScale) {
+		for (var lane = -1; lane < 2; lane++) {
+			var randomNumber = Math.random();
+			if (randomNumber < probability) {
+				var scale = minScale + (maxScale - minScale) * Math.random();
+				var box = new BoxWithText(lane * 800, -400, position, scale, "hello bitches");
+				objects.push(box);
+				scene.add(box.mesh);
 			}
 		}
 	}
@@ -661,8 +675,46 @@ function Tree(x, y, z, s) {
     		&& treeMinY <= maxY && treeMaxY >= minY
     		&& treeMinZ <= maxZ && treeMaxZ >= minZ;
     }
-
 }
+
+function BoxWithText(x, y, z, s, text) {
+	var self = this;
+	this.mesh = new THREE.Object3D();
+    var geometry = new THREE.BoxGeometry(200, 200, 200);
+    var material = new THREE.MeshBasicMaterial({ color: Colors.green });
+    var box = new THREE.Mesh(geometry, material);
+    this.mesh.add(box);
+    this.mesh.position.set(x, y, z);
+    this.mesh.scale.set(s, s, s);
+	this.scale = s;
+	this.answer = true;
+
+    var loader = new THREE.FontLoader();
+    loader.load('https://cdn.rawgit.com/mrdoob/three.js/master/examples/fonts/helvetiker_regular.typeface.json', function(font) {
+        var textGeometry = new THREE.TextGeometry(text, {
+            font: font,
+            size: 40,
+            height: 20
+        });
+        var textMaterial = new THREE.MeshBasicMaterial({ color: Colors.white });
+        var textMesh = new THREE.Mesh(textGeometry, textMaterial);
+        textMesh.position.set(-50, -50, 50); // Adjust position as needed
+		this.mesh.add(textMesh); // Add the text to the mesh
+    });
+
+	this.collides = function(minX, maxX, minY, maxY, minZ, maxZ) {
+		var boxMinX = self.mesh.position.x - this.scale * (200 / 2);
+		var boxMaxX = self.mesh.position.x + this.scale * (200 / 2);
+		var boxMinY = self.mesh.position.y - this.scale * (200 / 2);
+		var boxMaxY = self.mesh.position.y + this.scale * (200 / 2);
+		var boxMinZ = self.mesh.position.z - this.scale * (200 / 2);
+		var boxMaxZ = self.mesh.position.z + this.scale * (200 / 2);
+    	return boxMinX <= maxX && boxMaxX >= minX
+    		&& boxMinY <= maxY && boxMaxY >= minY
+    		&& boxMinZ <= maxZ && boxMaxZ >= minZ;
+    }
+}
+
 
 /** 
  *
