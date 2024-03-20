@@ -50,7 +50,7 @@ function World() {
 
 	// Scoped variables in this world.
 	var element, scene, camera, character, renderer, light,
-		objects, paused, keysAllowed, score, question_count, 
+		objects, paused, keysAllowed, score, 
 		questions, correct_count, difficulty,
 		treePresenceProb, maxTreeSize, fogDistance, gameOver;
 
@@ -104,11 +104,11 @@ function World() {
 
 		objects = [];
 		questions = [];
-		treePresenceProb = 0.3;
+		treePresenceProb = 0.2;
 		maxTreeSize = 0.5;
 
 		for (var i = 10; i < 40; i++) {
-			question_count = createRowofObstacles(i * -3000, treePresenceProb, 0.5, maxTreeSize, question_count);
+			createRowofObstacles(i * -3000, treePresenceProb, 0.5, maxTreeSize);
 		}
 
 		// The game is paused to begin with and the game is not over.
@@ -174,7 +174,6 @@ function World() {
 
 		// Initialize the scores and difficulty.
 		score = 0;
-		question_count = 0;
 		correct_count = 0;
 		difficulty = 0;
 		document.getElementById("score").innerHTML = score;
@@ -233,7 +232,7 @@ function World() {
 				} else if (difficulty >= 8 * levelLength && difficulty < 9 * levelLength) {
 					fogDistance -= (5000 / levelLength);
 				}
-				question_count = createRowofObstacles(-120000, treePresenceProb, 0.5, maxTreeSize, question_count);
+				createRowofObstacles(-120000, treePresenceProb, 0.5, maxTreeSize);
 				scene.fog.far = fogDistance;
 			}
 
@@ -356,11 +355,11 @@ function World() {
 		}
 	}
 
-	function createRowofAnswers(position, probability, minScale, maxScale, question_count) 
+	function createRowofAnswers(position, probability, minScale, maxScale) 
 	{
 		var scale = minScale + (maxScale - minScale) * Math.random();
 
-		questionBox = new QuestionBox("made you look", question_count);
+		questionBox = new QuestionBox("made you look", position);
 		questions.push(questionBox);
 		scene.add(questionBox.mesh);
 	
@@ -370,14 +369,14 @@ function World() {
 			if (lane == treePosition) {
 				obstacle = new Tree(lane * 800, -400, position, scale);
 			} else {
-				obstacle = new AnswerBox(lane * 800, -400, position, scale, "hello bitches", question_count+1);
+				obstacle = new AnswerBox(lane * 800, -400, position, scale, "hello bitches");
 			}
 			objects.push(obstacle);
 			scene.add(obstacle.mesh);
 		}
 	}
 
-	function createRowofObstacles(position, probability, minScale, maxScale, question_count) 
+	function createRowofObstacles(position, probability, minScale, maxScale) 
 	{
 		var randomNumber = Math.random();
 		if (randomNumber < probability) {
@@ -385,11 +384,9 @@ function World() {
 			if (randomNumber < 0.2) {
 				createRowOfTrees(position, probability, minScale, maxScale);
 			} else { 
-				createRowofAnswers(position, probability, minScale, maxScale, question_count);
-				return question_count + 1;
+				createRowofAnswers(position, probability, minScale, maxScale);
 			}
 		}
-		return question_count;
 	}
 	/**
 	 * Returns true if and only if the character is currently colliding with
@@ -705,8 +702,9 @@ function Tree(x, y, z, s) {
     		&& treeMinZ <= maxZ && treeMaxZ >= minZ;
     }
 }
-function QuestionBox(text, question_count) {
+function QuestionBox(text, hiddenZ) {
 	var self = this;
+	this.hiddenZ = hiddenZ;
 	this.mesh = new THREE.Object3D();
 	var geometry = new THREE.BoxGeometry(3000, 500, 0);
     var material = new THREE.MeshBasicMaterial({ color: Colors.yellow });
@@ -729,9 +727,8 @@ function QuestionBox(text, question_count) {
 	}.bind(this));
 }
 
-function AnswerBox(x, y, z, s, text, question_count) {
+function AnswerBox(x, y, z, s, text) {
 	var self = this;
-	this.id = question_count;
 	this.mesh = new THREE.Object3D();
 	var geometry = new THREE.BoxGeometry(1000, 4000, 500);
     var material = new THREE.MeshBasicMaterial({ color: Colors.blue });
