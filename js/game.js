@@ -9,7 +9,7 @@
  */
 var Colors = {
 	cherry: 0xe35d6a,
-	blue: 0x1560bd,
+	blue: 0x00205B,
 	white: 0xd8d0d1,
 	black: 0x000000,
 	brown: 0x59332e,
@@ -98,11 +98,14 @@ function World() {
 		scene.add(character.element);
 
 		var ground = createBox(3000, 20, 120000, Colors.sand, 0, -400, -60000);
+		var questionBox = createBox(3000, 500, 0, Colors.yellow, 0, 2000, -6000);
 		scene.add(ground);
+		scene.add(questionBox);
 
 		objects = [];
 		treePresenceProb = 0.2;
 		maxTreeSize = 0.5;
+
 		createRowOfBoxes(5*-3000, 1, 0.5, maxTreeSize);
 
 		for (var i = 10; i < 40; i++) {
@@ -262,7 +265,7 @@ function World() {
     			variableContent.innerHTML = 
     				"Game over! Press the down arrow to try again.";
     			var table = document.getElementById("ranks");
-    			var rankNames = ["Typical Engineer", "Couch Potato", "Weekend Jogger", "Daily Runner",
+    			var rankNames = ["Typical Steward", "Couch Potato", "Weekend Jogger", "Daily Runner",
     				"Local Prospect", "Regional Star", "National Champ", "Second Mo Farah"];
     			var rankIndex = Math.floor(score / 15000);
 
@@ -680,35 +683,35 @@ function Tree(x, y, z, s) {
 function BoxWithText(x, y, z, s, text) {
 	var self = this;
 	this.mesh = new THREE.Object3D();
-    var geometry = new THREE.BoxGeometry(200, 200, 200);
-    var material = new THREE.MeshBasicMaterial({ color: Colors.green });
+	var geometry = new THREE.BoxGeometry(1000, 4000, 500);
+    var material = new THREE.MeshBasicMaterial({ color: Colors.blue });
     var box = new THREE.Mesh(geometry, material);
     this.mesh.add(box);
     this.mesh.position.set(x, y, z);
     this.mesh.scale.set(s, s, s);
 	this.scale = s;
 	this.answer = true;
-
+	var textmesh;
     var loader = new THREE.FontLoader();
     loader.load('https://cdn.rawgit.com/mrdoob/three.js/master/examples/fonts/helvetiker_regular.typeface.json', function(font) {
         var textGeometry = new THREE.TextGeometry(text, {
             font: font,
-            size: 40,
-            height: 20
+            size: 100,
+            height: 50
         });
         var textMaterial = new THREE.MeshBasicMaterial({ color: Colors.white });
-        var textMesh = new THREE.Mesh(textGeometry, textMaterial);
-        textMesh.position.set(-50, -50, 50); // Adjust position as needed
-		this.mesh.add(textMesh); // Add the text to the mesh
-    });
+        textMesh = new THREE.Mesh(textGeometry, textMaterial);
+		textMesh.position.set(-400, 1500, 400); // Adjust position as needed
+		this.mesh.add(textMesh); // Add textMesh to the scene
+	}.bind(this));
 
 	this.collides = function(minX, maxX, minY, maxY, minZ, maxZ) {
-		var boxMinX = self.mesh.position.x - this.scale * (200 / 2);
-		var boxMaxX = self.mesh.position.x + this.scale * (200 / 2);
-		var boxMinY = self.mesh.position.y - this.scale * (200 / 2);
-		var boxMaxY = self.mesh.position.y + this.scale * (200 / 2);
-		var boxMinZ = self.mesh.position.z - this.scale * (200 / 2);
-		var boxMaxZ = self.mesh.position.z + this.scale * (200 / 2);
+		var boxMinX = self.mesh.position.x - this.scale * (500 / 2);
+		var boxMaxX = self.mesh.position.x + this.scale * (500 / 2);
+		var boxMinY = self.mesh.position.y - this.scale * (5000 / 2);
+		var boxMaxY = self.mesh.position.y + this.scale * (500 / 2);
+		var boxMinZ = self.mesh.position.z - this.scale * (500 / 2);
+		var boxMaxZ = self.mesh.position.z + this.scale * (500 / 2);
     	return boxMinX <= maxX && boxMaxX >= minX
     		&& boxMinY <= maxY && boxMaxY >= minY
     		&& boxMinZ <= maxZ && boxMaxZ >= minZ;

@@ -18,14 +18,14 @@ html, body {
   position: absolute;
   width:75%;
   height: 100%;
-  right:0;
+  left:0;
   overflow: hidden;
 }
 
 .panel {
     position:absolute;
     top:0;
-    left:0;
+    right:0;
     padding: 2em 3em;
     width: 25%;
     box-sizing: border-box;
@@ -40,18 +40,9 @@ html, body {
 .game-title .title {
     font-family: 'Playfair Display', serif;
     font-weight:700;
-    font-size:3em;
+    font-size:1.5em;
 }
 
-.game-title .byline {
-    font-family: 'Playfair Display', serif;
-    text-transform:uppercase;
-    color:#333;
-    letter-spacing:0.2em;
-    font-size:0.8em;
-    font-weight:600;
-    margin-top:0.5em;
-}
 
 a {
     font-family: 'Playfair Display', serif;
